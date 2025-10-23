@@ -59,7 +59,7 @@ rm -rf test
 ```
 
 ### 4.编写文件，配置setup.py(注意版本的兼容问题)
-
+```bash
 mujoco_ros_demo/
 ├── config/
 │   ├── assets/           # 3D模型文件(STL格式)
@@ -73,8 +73,18 @@ mujoco_ros_demo/
 ├── package.xml           # ROS2包配置文件
 ├── setup.py             # Python包安装配置
 └── README.md
+```
 
-### 5.节点说明
+### 5.模型文件说明
+为保持代码仓库的简洁性并满足存储限制，本项目仅包含运行程序所必需的核心模型文件(共9个文件)。完整的人体模型文件集包含40多个3D部件文件，主要用于手部精细建模。
+
+完整模型文件集（包含手部精细模型等）可通过以下链接下载：
+[完整模型文件集网盘链接](https://pan.baidu.com/s/1SN5SWpyfKR7KYDbE8lzvBw?pwd=9e9u)
+
+下载完整文件集后，将其解压到 `config/assets/` 目录中，可获得更完整的人体模型可视化效果。
+
+
+### 6.节点说明
 
 **MujocoPublisher** (mujoco_publisher.py)
 功能: 加载MuJoCo人形机器人模型并发布关节角度数据
@@ -102,7 +112,7 @@ ros2 launch mujoco_ros_demo main.launch.py
 https://private-user-images.githubusercontent.com/221759988/504662359-96d717f3-816d-45ec-937d-a5afacb8ad6d.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjEyMTM2ODksIm5iZiI6MTc2MTIxMzM4OSwicGF0aCI6Ii8yMjE3NTk5ODgvNTA0NjYyMzU5LTk2ZDcxN2YzLTgxNmQtNDVlYy05MzdkLWE1YWZhY2I4YWQ2ZC5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyM1QwOTU2MjlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jZTcxMzhhOTMyNzljMTBiODAxM2M0NzA4NGI3ODk2OTQ1MTExMWUxMzE5YjQ2ZmExZjM0OTMzYjA0MDFjZmY1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.GP_uheocaR_SA7KHGhIlwWpH4BhHK6Atcmx2zJ5irgM
 
 ### **2.使用rqt可视化工具**
-https://private-user-images.githubusercontent.com/221759988/504662408-5d3d6579-7042-4bde-bde8-d2895a11d887.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjEyMTM2ODksIm5iZiI6MTc2MTIxMzM4OSwicGF0aCI6Ii8yMjE3NTk5ODgvNTA0NjYyNDA4LTVkM2Q2NTc5LTcwNDItNGJkZS1iZGU4LWQyODk1YTExZDg4Ny5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyM1QwOTU2MjlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1mZGI0NTIzMjYxNmVlNTM5MTE0NTI2ODA4ZmJiMDY4MDg0NmE0NjU2MmUxNjJjMzMwYTRiYjEzMjYxNDljMDc0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.q1Bd2Z3sh5QoJNOfSYL3n1k9nyEZNWPFXHx573JKzDk
+![rqt可视化工具截图](https://private-user-images.githubusercontent.com/221759988/504847607-c554883e-9f47-4760-84c0-d920b9080afb.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjEyMzg1MDgsIm5iZiI6MTc2MTIzODIwOCwicGF0aCI6Ii8yMjE3NTk5ODgvNTA0ODQ3NjA3LWM1NTQ4ODNlLTlmNDctNDc2MC04NGMwLWQ5MjBiOTA4MGFmYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyM1QxNjUwMDhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02NGQ5ZjdiMjg0MjQ2ZTYxZTg1NTc1YTlkZGFjZGNiZmIzOWY5NGI5ZDMxNjBhZWE4MjM1YmViZWIxNWNkZjZkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.kJVbj-1bJWBL2AJChdFY8trfH9TrITbZnN_CdCDjGO8)
 
 
 
@@ -113,5 +123,3 @@ https://private-user-images.githubusercontent.com/221759988/504662408-5d3d6579-7
 [MuJoCo](https://github.com/deepmind/mujoco) - 高性能物理引擎
 [ROS 2](https://github.com/ros2) - 机器人操作系统
 [User-in-the-Box](https://github.com/User-in-the-Box/user-in-the-box) - 项目参考
-
-

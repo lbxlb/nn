@@ -1,125 +1,96 @@
-# MuJoCo ROS 2 Demo
+# 生物模型交互任务--食指追踪小球
 
-这是一个基于MuJoCo物理引擎和ROS2的机器人仿真演示项目。该项目实现了一个人形机器人模型的物理仿真，并通过ROS2节点发布和订阅关节角度数据。
+- 一个基于 MuJoCo 的人体手臂和手部运动仿真项目，专注于食指指向功能。该项目集成了手部追踪与基于物理的仿真，以复现逼真的类人指向手势。
 
-## 演示视频
+## 概述
 
-https://private-user-images.githubusercontent.com/221759988/504662321-9983c539-6cb3-480d-b85e-83649e2c78c8.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjEyMTM2ODksIm5iZiI6MTc2MTIxMzM4OSwicGF0aCI6Ii8yMjE3NTk5ODgvNTA0NjYyMzIxLTk5ODNjNTM5LTZjYjMtNDgwZC1iODVlLTgzNjQ5ZTJjNzhjOC5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyM1QwOTU2MjlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hOTQxODNlZjVhYWExZDZlNTBkZTg0YmI1N2E2OWM0NzdiMWJhOGUwNTgzMDBkNTA1ODUzOGIwOTVkMjRmZjFkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.U2xyKRU3qZ4D-nL3fc38U9AjBZqKHnsLkVNASP4KfLY
+- 本仓库包含人体上肢的物理仿真，专门设计用于模拟食指指向动作。仿真使用MuJoCo作为物理引擎，并并结合MediaPipe进行实时手部追踪，能够将现实世界的手部手势映射到虚拟化身的动作中。
 
-## 项目概述
+- **运行视频**
 
-本项目包含以下主要组件：
-- 使用MuJoCo物理引擎加载和仿真人形机器人模型
-- Publisher节点定期发布机器人关节角度数据
-- Subscriber节点接收并处理关节角度数据
-- 完整的ROS2 launch文件用于启动整个系统
+https://private-user-images.githubusercontent.com/221759988/503032303-50f5a090-a7d4-49a9-b313-ae538ed95eb8.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjA5MjM4MTQsIm5iZiI6MTc2MDkyMzUxNCwicGF0aCI6Ii8yMjE3NTk5ODgvNTAzMDMyMzAzLTUwZjVhMDkwLWE3ZDQtNDlhOS1iMzEzLWFlNTM4ZWQ5NWViOC5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIwJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyMFQwMTI1MTRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kM2M5YThjMmIwZGFlNmFiYTMyNzJmZmU3ZmQwYjFjZTZhNGZlZjc0OTZiZDQ5MWYwZGQ0MzNlMWI0ZDM5MjVmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.ydhE1SWUqfp2FgXnAgZIftV8ONJws_CA0JaZcnvhK44
+
+## 主要特点
+
+- **高精度骨骼模型**：在原框架基础上扩展了手部骨骼细节，包含掌骨、指骨（近节/中节/远节）的完整结构
+- **增强型肌肉驱动**：新增食指相关肌肉群（如FDPI、EDM等）的肌腱路径定义，提升指向动作真实性
+- **实时手势映射**：集成MediaPipe手部追踪，可将真实手势实时映射到虚拟模型
+- **目标追踪功能**：支持配置目标坐标，实现食指自动指向指定位置
+- **兼容性设计**：保持与[User-in-the-Box](https://github.com/User-in-the-Box/user-in-the-box)原项目的模型格式与仿真逻辑兼容
+
+## 文件说明
+| 文件名 | 描述 |
+|--------|------|
+| **config.yaml**（仿真参数配置文件） | 包含仿真步长（dt）、渲染模式（render_mode）、窗口分辨率（resolution）及目标追踪位置（target_pos）等关键参数，可直接修改以调整仿真行为 |
+| **simulation.xml**（MuJoCo 模型定义文件） | 包含完整的上肢骨骼结构（锁骨、肱骨、尺骨、手部掌骨及指骨等）、肌肉与肌腱参数（如长度范围、增益参数）、标记点（用于肌肉附着与关键位置定位）及关节活动范围等核心物理仿真信息，是整个仿真的几何与物理基础 |
+| **evaluator.py**（程序入口脚本） | 通过命令行参数接收配置文件（--config）和模型文件（--model）路径，初始化仿真器并启动仿真循环，按 ESC 键可退出仿真 |
+| **simulator.py**（仿真器核心逻辑实现） | 包含 MuJoCo 环境初始化、Viewer（可视化窗口）适配（兼容不同版本 MuJoCo API）、仿真循环控制及手势映射等关键功能，是连接模型与交互逻辑的核心模块 |
+| **assets/**（模型资源文件夹） | 存放模型所需的网格文件（.stl）和纹理文件，用于定义骨骼、手部等组件的几何形状与外观，是 simulation.xml 中引用的可视化资源基础 |
+
+## 模型结构
+
+仿真模型定义在simulation.xml中，包含以下核心组件：
+- **骨骼结构**：详细的上肢骨骼模型，包括锁骨、尺骨、手部掌骨及指骨（如 index0、index1 对应食指的不同节段），并通过网格文件（.stl）定义几何形状。
+- **标记点（sites）**：用于定位肌肉附着点和关键位置，如手指关节（FDPI-P3 至 FDPI-P9 对应食指相关点位）、肌肉路径点（BIClong-P1 至 BIClong-P11 对应肱二头肌长头）。
+- **肌腱与肌肉**：定义了主要肌肉的路径（如三角肌 TRI、肱二头肌 BIC、肱三头肌 TRI 等）及物理参数（长度范围、增益参数等），实现逼真的肌肉驱动效果。
+- **关节**：定义了各关节的活动范围和轴方向，如肘关节弯曲（elbow_flexion）的活动角度限制。
 
 ## 系统要求
 
-- Ubuntu 22.04 LTS
-- ROS 2 Humble
-- Python 3.10
-- Conda 环境管理器
-- MuJoCo 物理引擎
+- ubuntu 22.04(humble)
+- Python 3.8+
+- MuJoCo 2.3.0+
+- OpenCV
+- MediaPipe
+- NumPy
+- PyYAML
 
-## 安装步骤
+## 安装
 
-### 1. 安装 ROS 2 Humble
+1. **克隆本仓库**
+```python
+# 克隆主项目
+git clone https://github.com/yourusername/mobl-arms-index-pointing.git
+cd mobl-arms-index-pointing
 
-按照官方指南安装 ROS 2 Humble：
-https://docs.ros.org/en/humble/Installation.html
-
-### 2. 创建 Conda 环境
-
-```bash
-# 创建并激活 conda 环境
-conda create -n mjoco_py310 python=3.10
-conda activate mjoco_py310
-
-# 安装 mujoco、numpy等缺少的依赖包
-pip install mujoco
-```
-## 编写文件
-
-### 1.创建src目录
-```bash
-mkdir -p mujoco_ros_demo/src
-cd mujoco_ros_demo/src
+# 克隆 User-in-the-Box 核心依赖（如需要）
+git clone https://github.com/User-in-the-Box/user-in-the-box.git
 ```
 
-### 2.使用apache协议创建功能包
-```bash
-ros2 pkg create --build-type ament_python mujoco_ros_demo --dependencies std_msgs 
+2. **安装依赖**
+
+- 创建conda环境(本地虚拟环境名为*mjoco*)，根据需要的包(mujoco, mediapipe, numpy, pyyaml等)下载依赖
+- **推荐**：或者在[User-in-the-Box](https://github.com/User-in-the-Box/user-in-the-box)原项目的[安装/设置](https://github.com/User-in-the-Box/user-in-the-box?tab=readme-ov-file#installation--setup)配置
+```python
+#需要先激活虚拟环境
+pip install -e .
 ```
 
-### 3.创建launch、config目录以及两个话题订阅发布文件，删除非必须文件（test/）
-```bash
-mkdir -p launch config
-rm -rf test
+## 配置说明
+
+配置文件config.yaml用于设置仿真参数，与原项目格式保持一致,主要包含以下选项：
+```python
+dt: 0.05                # 仿真步长
+render_mode: "human"    # 显示可视化窗口（可选值："human" 显示窗口，"offscreen" 无窗口运行）
+resolution: [1280, 960] # 窗口分辨率 [宽度, 高度]
+target_pos: [0.4, 0, 0.7] # 追踪目标位置（可选，用于指定食指指向的目标坐标）
+``` 
+可根据需求修改上述参数，例如调整仿真精度（dt 越小精度越高但速度越慢）或窗口大小。
+
+## 使用/运行
+
+运行仿真程序：
+```python
+python evaluator.py --config config.yaml --model simulation.xml
 ```
+启动后，程序将初始化仿真环境并进入循环，实时渲染手臂运动。按 ESC 键可退出仿真。
 
-### 4.编写文件，配置setup.py(注意版本的兼容问题)
-```bash
-mujoco_ros_demo/
-├── config/
-│   ├── assets/           # 3D模型文件(STL格式)
-│   └── humanoid.xml      # 机器人模型配置文件
-├── launch/
-│   └── main.launch.py    # ROS2启动文件
-├── mujoco_ros_demo/
-│   ├── __init__.py
-│   ├── mujoco_publisher.py   # 发布关节角度数据的节点
-│   └── data_subscriber.py    # 订阅并处理数据的节点
-├── package.xml           # ROS2包配置文件
-├── setup.py             # Python包安装配置
-└── README.md
-```
+## 扩展与定制
 
-### 5.模型文件说明
-为保持代码仓库的简洁性并满足存储限制，本项目仅包含运行程序所必需的核心模型文件(共9个文件)。完整的人体模型文件集包含40多个3D部件文件，主要用于手部精细建模。
+- 模型扩展：可通过修改 simulation.xml 调整骨骼结构、肌肉参数或添加新的标记点。
+- 手势追踪：如需自定义追踪逻辑，可修改仿真器核心代码（simulator.py）中的手势映射部分。
+- 目标设置：通过修改 config.yaml 中的 target_pos 可让食指指向不同的三维坐标。
 
-完整模型文件集（包含手部精细模型等）可通过以下链接下载：
-[完整模型文件集网盘链接](https://pan.baidu.com/s/1SN5SWpyfKR7KYDbE8lzvBw?pwd=9e9u)
+## 项目来源/参考
 
-下载完整文件集后，将其解压到 `config/assets/` 目录中，可获得更完整的人体模型可视化效果。
-
-
-### 6.节点说明
-
-**MujocoPublisher** (mujoco_publisher.py)
-功能: 加载MuJoCo人形机器人模型并发布关节角度数据
-订阅主题: 无
-发布主题: /joint_angles(std_msgs/Float64MultiArray)
-参数: model_path: 机器人模型文件路径
-
-**DataSubscriber** (data_subscriber.py)
-功能: 订阅关节角度数据并计算平均角度值
-订阅主题: /joint_angles(std_msgs/Float64MultiArray)
-发布主题: 无
-输出: 在终端打印接收到的关节角度和平均角度值
-
-
-## 运行文件
-```bash
-colcon build
-source install/setup.bash
-ros2 launch mujoco_ros_demo main.launch.py
-```
-
-## 运行结果
-
-### **1.使用ros2 node命令查看详细信息**
-https://private-user-images.githubusercontent.com/221759988/504662359-96d717f3-816d-45ec-937d-a5afacb8ad6d.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjEyMTM2ODksIm5iZiI6MTc2MTIxMzM4OSwicGF0aCI6Ii8yMjE3NTk5ODgvNTA0NjYyMzU5LTk2ZDcxN2YzLTgxNmQtNDVlYy05MzdkLWE1YWZhY2I4YWQ2ZC5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyM1QwOTU2MjlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jZTcxMzhhOTMyNzljMTBiODAxM2M0NzA4NGI3ODk2OTQ1MTExMWUxMzE5YjQ2ZmExZjM0OTMzYjA0MDFjZmY1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.GP_uheocaR_SA7KHGhIlwWpH4BhHK6Atcmx2zJ5irgM
-
-### **2.使用rqt可视化工具**
-![rqt可视化工具截图](https://private-user-images.githubusercontent.com/221759988/504847607-c554883e-9f47-4760-84c0-d920b9080afb.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjEyMzg1MDgsIm5iZiI6MTc2MTIzODIwOCwicGF0aCI6Ii8yMjE3NTk5ODgvNTA0ODQ3NjA3LWM1NTQ4ODNlLTlmNDctNDc2MC04NGMwLWQ5MjBiOTA4MGFmYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyM1QxNjUwMDhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02NGQ5ZjdiMjg0MjQ2ZTYxZTg1NTc1YTlkZGFjZGNiZmIzOWY5NGI5ZDMxNjBhZWE4MjM1YmViZWIxNWNkZjZkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.kJVbj-1bJWBL2AJChdFY8trfH9TrITbZnN_CdCDjGO8)
-
-
-
-## 许可证
-本项目基于Apache-2.0许可证发布。
-
-## 贡献参考
-[MuJoCo](https://github.com/deepmind/mujoco) - 高性能物理引擎
-[ROS 2](https://github.com/ros2) - 机器人操作系统
-[User-in-the-Box](https://github.com/User-in-the-Box/user-in-the-box) - 项目参考
+[User-in-the-Box](https://github.com/User-in-the-Box/user-in-the-box)
